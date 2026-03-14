@@ -118,7 +118,7 @@ export default function SignupPage() {
                 value={name} 
                 onChange={(e) => setName(e.target.value)} 
                 required 
-                placeholder="Satoshi Nakamoto"
+                placeholder="Enter your full name"
                 className="h-12 bg-background/50 focus-visible:ring-primary/50 transition-all border-border/50"
               />
             </div>
@@ -130,7 +130,7 @@ export default function SignupPage() {
                 value={email} 
                 onChange={(e) => setEmail(e.target.value)} 
                 required 
-                placeholder="satoshi@coreinv.local"
+                placeholder="name@company.com"
                 className="h-12 bg-background/50 focus-visible:ring-primary/50 transition-all border-border/50"
               />
             </div>

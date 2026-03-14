@@ -12,7 +12,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "sonner";
-import { Plus, Shield } from "lucide-react";
+import { Plus, Shield, Layers } from "lucide-react";
+import { EmptyState } from "@/components/EmptyState";
 
 interface OperationPageProps {
   type: "receipt" | "delivery" | "transfer" | "adjustment";

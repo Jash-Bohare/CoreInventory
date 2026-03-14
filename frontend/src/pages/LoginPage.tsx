@@ -9,8 +9,8 @@ import { Anchor, ShieldCheck, Database, Layers } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("demo@coreinv.local");
-  const [password, setPassword] = useState("password");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
@@ -111,13 +111,14 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
               <Label htmlFor="email" className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Email Address</Label>
-              <Input 
-                id="email" 
-                type="email" 
-                value={email} 
-                onChange={(e) => setEmail(e.target.value)} 
-                required 
-                className="h-12 bg-background/50 focus-visible:ring-primary/50 transition-all border-border/50"
+              <Input
+                id="email"
+                type="email"
+                placeholder="Enter your enterprise email"
+                className="transition-all focus:ring-2 focus:ring-primary/20 h-12 bg-background/50 border-border/50"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
               />
             </div>
             <div className="space-y-2">
@@ -125,13 +126,14 @@ export default function LoginPage() {
                 <Label htmlFor="password" className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Password</Label>
                 <a href="#" className="text-xs font-medium text-primary hover:underline">Forgot password?</a>
               </div>
-              <Input 
-                id="password" 
-                type="password" 
-                value={password} 
-                onChange={(e) => setPassword(e.target.value)} 
-                required 
-                className="h-12 bg-background/50 focus-visible:ring-primary/50 transition-all border-border/50"
+              <Input
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                className="transition-all focus:ring-2 focus:ring-primary/20 h-12 bg-background/50 border-border/50"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
               />
             </div>
             

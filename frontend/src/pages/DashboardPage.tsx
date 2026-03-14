@@ -8,15 +8,15 @@ import { VerifyModal } from "@/components/VerifyModal";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import {
-  Package, AlertTriangle, ArrowDownToLine, Truck, ArrowLeftRight, Anchor, Shield,
+  Package, AlertTriangle, ArrowDownToLine, Truck, ArrowLeftRight, Anchor, Shield, List
 } from "lucide-react";
+import { EmptyState } from "@/components/EmptyState";
 
 export default function DashboardPage() {
   const [summary, setSummary] = useState<any>(null);
   const [movements, setMovements] = useState<any[]>([]);
   const [lowStockItems, setLowStockItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [anchoring, setAnchoring] = useState(false);
   const [verifyId, setVerifyId] = useState<string>("");
   const [verifyOpen, setVerifyOpen] = useState(false);
 
@@ -35,26 +35,7 @@ export default function DashboardPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const handleAnchor = async () => {
-    setAnchoring(true);
-    try {
-      const res = await anchorApi.batch(20);
-      toast.success(`Anchored ${res.movementCount} movements`, {
-        description: `TX: ${res.txHash?.slice(0, 16)}...`,
-        action: res.txHash ? {
-          label: "View on Explorer",
-          onClick: () => window.open(`https://sepolia.etherscan.io/tx/${res.txHash}`, "_blank"),
-        } : undefined,
-      });
-      // Refresh
-      const m = await dashboardApi.recentMovements(8);
-      setMovements(m);
-    } catch (e: any) {
-      toast.error(e.message || "Anchoring failed");
-    } finally {
-      setAnchoring(false);
-    }
-  };
+
 
   const handleVerify = (id: string) => {
     setVerifyId(id);
@@ -77,15 +58,7 @@ export default function DashboardPage() {
 
   return (
     <>
-      <TopBar
-        title="Dashboard"
-        actions={
-          <Button onClick={handleAnchor} disabled={anchoring} className="active:scale-[0.98] transition-transform">
-            {anchoring ? <Spinner className="h-4 w-4 text-primary-foreground" /> : <Anchor className="h-4 w-4 mr-1.5" />}
-            Anchor Batch
-          </Button>
-        }
-      />
+      <TopBar title="Dashboard" />
       <main className="flex-1 p-6 max-w-[1400px] mx-auto w-full space-y-6">
         {/* KPI Cards */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">

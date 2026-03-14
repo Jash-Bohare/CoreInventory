@@ -6,7 +6,8 @@ import { PageSpinner } from "@/components/Spinner";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { ArrowLeft, List } from "lucide-react";
+import { ArrowLeft, List, Database } from "lucide-react";
+import { EmptyState } from "@/components/EmptyState";
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();

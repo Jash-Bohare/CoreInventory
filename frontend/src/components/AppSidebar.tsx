@@ -73,7 +73,7 @@ function NavGroup({ label, items }: { label: string; items: typeof mainItems }) 
 
 export function AppSidebar() {
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="none">
       <SidebarContent>
         <div className="px-4 py-6 flex items-center gap-3">
           <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center shadow-lg shadow-primary/20">

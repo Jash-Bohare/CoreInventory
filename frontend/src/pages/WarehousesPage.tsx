@@ -108,8 +108,8 @@ export default function WarehousesPage() {
         <DialogContent className="animate-fade-in">
           <DialogHeader><DialogTitle>{editing ? "Edit Warehouse" : "Add Warehouse"}</DialogTitle></DialogHeader>
           <div className="space-y-3">
-            <div><Label>Name</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Main Warehouse" /></div>
-            <div><Label>Location</Label><Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} placeholder="Factory Building A" /></div>
+            <div><Label>Name</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Enter warehouse name" /></div>
+            <div><Label>Location</Label><Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} placeholder="Enter location details" /></div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setModalOpen(false)}>Cancel</Button>

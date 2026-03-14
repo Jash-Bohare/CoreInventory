@@ -10,7 +10,8 @@ import { StatusBadge, AnchoredBadge } from "@/components/StatusBadge";
 import { VerifyModal } from "@/components/VerifyModal";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Shield, ChevronLeft, ChevronRight } from "lucide-react";
+import { Shield, ChevronLeft, ChevronRight, List } from "lucide-react";
+import { EmptyState } from "@/components/EmptyState";
 
 export default function MovementsPage() {
   const [searchParams] = useSearchParams();
