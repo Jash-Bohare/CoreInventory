@@ -1,0 +1,152 @@
+import { useState, useEffect } from "react";
+import { TopBar } from "@/components/TopBar";
+import { dashboardApi, anchorApi } from "@/services/api";
+import { Button } from "@/components/ui/button";
+import { Spinner, PageSpinner } from "@/components/Spinner";
+import { StatusBadge, AnchoredBadge } from "@/components/StatusBadge";
+import { VerifyModal } from "@/components/VerifyModal";
+import { toast } from "sonner";
+import { Link } from "react-router-dom";
+import {
+  Package, AlertTriangle, ArrowDownToLine, Truck, ArrowLeftRight, Anchor, Shield,
+} from "lucide-react";
+
+export default function DashboardPage() {
+  const [summary, setSummary] = useState<any>(null);
+  const [movements, setMovements] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [anchoring, setAnchoring] = useState(false);
+  const [verifyId, setVerifyId] = useState<string>("");
+  const [verifyOpen, setVerifyOpen] = useState(false);
+
+  useEffect(() => {
+    Promise.all([dashboardApi.summary(), dashboardApi.recentMovements(8)])
+      .then(([s, m]) => { setSummary(s); setMovements(m); })
+      .catch(() => toast.error("Failed to load dashboard"))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const handleAnchor = async () => {
+    setAnchoring(true);
+    try {
+      const res = await anchorApi.batch(20);
+      toast.success(`Anchored ${res.movementCount} movements`, {
+        description: `TX: ${res.txHash?.slice(0, 16)}...`,
+        action: res.txHash ? {
+          label: "View on Explorer",
+          onClick: () => window.open(`https://sepolia.etherscan.io/tx/${res.txHash}`, "_blank"),
+        } : undefined,
+      });
+      // Refresh
+      const m = await dashboardApi.recentMovements(8);
+      setMovements(m);
+    } catch (e: any) {
+      toast.error(e.message || "Anchoring failed");
+    } finally {
+      setAnchoring(false);
+    }
+  };
+
+  const handleVerify = (id: string) => {
+    setVerifyId(id);
+    setVerifyOpen(true);
+  };
+
+  if (loading) return <><TopBar title="Dashboard" /><PageSpinner /></>;
+
+  const kpis = [
+    { label: "Total Products", value: summary?.totalProducts ?? 0, icon: Package },
+    { label: "Low Stock", value: summary?.lowStock ?? 0, icon: AlertTriangle },
+    { label: "Pending Receipts", value: summary?.pendingReceipts ?? 0, icon: ArrowDownToLine },
+    { label: "Pending Deliveries", value: summary?.pendingDeliveries ?? 0, icon: Truck },
+    { label: "Transfers Scheduled", value: summary?.transfersScheduled ?? 0, icon: ArrowLeftRight },
+  ];
+
+  const typeIcons: Record<string, any> = {
+    receipt: ArrowDownToLine, delivery: Truck, transfer: ArrowLeftRight, adjustment: AlertTriangle,
+  };
+
+  return (
+    <>
+      <TopBar
+        title="Dashboard"
+        actions={
+          <Button onClick={handleAnchor} disabled={anchoring} className="active:scale-[0.98] transition-transform">
+            {anchoring ? <Spinner className="h-4 w-4 text-primary-foreground" /> : <Anchor className="h-4 w-4 mr-1.5" />}
+            Anchor Batch
+          </Button>
+        }
+      />
+      <main className="flex-1 p-6 max-w-[1400px] mx-auto w-full space-y-6">
+        {/* KPI Cards */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          {kpis.map((kpi) => (
+            <div key={kpi.label} className="shadow-card hover:shadow-card-hover transition-shadow rounded-xl bg-card p-4 space-y-1">
+              <div className="flex items-center gap-2">
+                <kpi.icon className="h-4 w-4 text-muted-foreground" />
+                <span className="text-xs font-medium uppercase text-muted-foreground tracking-wide">{kpi.label}</span>
+              </div>
+              <p className="text-2xl font-bold tabular-nums tracking-tight">{kpi.value.toLocaleString()}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Recent Movements */}
+        <div className="shadow-card rounded-xl bg-card">
+          <div className="p-4 border-b">
+            <h2 className="text-sm font-semibold">Recent Movements</h2>
+          </div>
+          <div className="divide-y">
+            {movements.length === 0 && (
+              <p className="text-sm text-muted-foreground p-4">No movements yet.</p>
+            )}
+            {movements.map((m: any) => {
+              const Icon = typeIcons[m.type] || Package;
+              const productName = m.productId?.name || "Unknown";
+              const productId = m.productId?._id;
+              const from = m.fromWarehouseId?.name;
+              const to = m.toWarehouseId?.name;
+              const isPositive = m.type === "receipt" || m.type === "adjustment";
+
+              return (
+                <div key={m._id} className="flex items-center gap-3 p-3 hover:bg-muted/30 transition-colors group">
+                  <div className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
+                    <Icon className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      {productId ? (
+                        <Link to={`/products/${productId}`} className="text-sm font-medium hover:text-primary truncate">{productName}</Link>
+                      ) : (
+                        <span className="text-sm font-medium truncate">{productName}</span>
+                      )}
+                      <StatusBadge status={m.status} />
+                      <AnchoredBadge anchored={m.anchored} />
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {from && to ? `${from} → ${to}` : from || to || ""}
+                      {m.createdAt && ` · ${new Date(m.createdAt).toLocaleDateString()}`}
+                    </p>
+                  </div>
+                  <span className={`text-sm font-semibold tabular-nums ${isPositive ? "text-success" : "text-destructive"}`}>
+                    {isPositive ? "+" : "−"}{m.qty}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={() => handleVerify(m._id)}
+                  >
+                    <Shield className="h-4 w-4 mr-1" /> Verify
+                  </Button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </main>
+
+      <VerifyModal movementId={verifyId} open={verifyOpen} onOpenChange={setVerifyOpen} />
+    </>
+  );
+}
