@@ -316,13 +316,22 @@ exports.getMovements = async (req, res) => {
             .skip(skip)
             .limit(Number(limit))
 
+        const hashMovement = require("../utils/hashMovement");
+        const data = movements.map(m => {
+            const obj = m.toJSON();
+            if (obj.canonicalHash) {
+                obj.tampered = hashMovement(m) !== obj.canonicalHash;
+            }
+            return obj;
+        });
+
         const total = await StockMovement.countDocuments(query)
 
         res.json({
             total,
             page: Number(page),
             pages: Math.ceil(total / limit),
-            data: movements
+            data
         })
 
     } catch (error) {

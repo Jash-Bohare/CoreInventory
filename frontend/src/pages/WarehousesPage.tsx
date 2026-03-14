@@ -64,7 +64,7 @@ export default function WarehousesPage() {
       } />
       <main className="flex-1 p-6 max-w-[1400px] mx-auto w-full">
         {!warehousesLoaded ? <PageSpinner /> : (
-          <div className="shadow-card rounded-xl bg-card overflow-hidden">
+          <div className="shadow-card rounded-xl overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/50">

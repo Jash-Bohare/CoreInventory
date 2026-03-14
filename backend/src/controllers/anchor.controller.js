@@ -79,6 +79,14 @@ exports.verifyMovement = async (req, res) => {
 
         const anchor = await Anchor.findById(movement.anchorId)
 
+        // Anti-tamper check: rehash current DB state to ensure it matches the anchored hash
+        const hashMovement = require("../utils/hashMovement")
+        const currentHash = hashMovement(movement)
+        
+        if (currentHash !== movement.canonicalHash) {
+            return res.status(400).json({ message: "Data tampering detected: Record has been modified since it was anchored to the blockchain." })
+        }
+
         const movements = await StockMovement.find({
             _id: { $in: anchor.movementIds }
         })

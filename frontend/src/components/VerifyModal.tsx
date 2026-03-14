@@ -30,7 +30,7 @@ export function VerifyModal({ movementId, open, onOpenChange }: VerifyModalProps
       const res = await anchorApi.verify(movementId);
       setData(res);
     } catch (e: any) {
-      setError(e.message || "Not anchored yet");
+      setError(e.response?.data?.message || e.message || "Not anchored yet");
     } finally {
       setLoading(false);
     }

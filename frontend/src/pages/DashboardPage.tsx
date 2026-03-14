@@ -66,9 +66,9 @@ export default function DashboardPage() {
   const kpis = [
     { label: "Total Products", value: summary?.totalProducts ?? 0, icon: Package },
     { label: "Low Stock", value: summary?.lowStock ?? 0, icon: AlertTriangle },
-    { label: "Pending Receipts", value: summary?.pendingReceipts ?? 0, icon: ArrowDownToLine },
-    { label: "Pending Deliveries", value: summary?.pendingDeliveries ?? 0, icon: Truck },
-    { label: "Transfers Scheduled", value: summary?.transfersScheduled ?? 0, icon: ArrowLeftRight },
+    { label: "Total Receipts", value: summary?.pendingReceipts ?? 0, icon: ArrowDownToLine },
+    { label: "Total Deliveries", value: summary?.pendingDeliveries ?? 0, icon: Truck },
+    { label: "Total Transfers", value: summary?.transfersScheduled ?? 0, icon: ArrowLeftRight },
   ];
 
   const typeIcons: Record<string, any> = {
@@ -90,7 +90,7 @@ export default function DashboardPage() {
         {/* KPI Cards */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
           {kpis.map((kpi) => (
-            <div key={kpi.label} className="shadow-card hover:shadow-card-hover transition-shadow rounded-xl bg-card p-4 space-y-1">
+            <div key={kpi.label} className="shadow-card hover:shadow-card-hover transition-shadow rounded-xl p-4 space-y-1">
               <div className="flex items-center gap-2">
                 <kpi.icon className="h-4 w-4 text-muted-foreground" />
                 <span className="text-xs font-medium uppercase text-muted-foreground tracking-wide">{kpi.label}</span>
@@ -101,7 +101,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Recent Movements */}
-        <div className="shadow-card rounded-xl bg-card">
+        <div className="shadow-card rounded-xl">
           <div className="p-4 border-b">
             <h2 className="text-sm font-semibold">Recent Movements</h2>
           </div>
@@ -118,7 +118,7 @@ export default function DashboardPage() {
               const isPositive = m.type === "receipt" || m.type === "adjustment";
 
               return (
-                <div key={m._id} className="flex items-center gap-3 p-3 hover:bg-muted/30 transition-colors group">
+                <div key={m._id} className={`flex items-center gap-3 p-3 transition-colors group ${m.tampered ? 'bg-destructive/15 hover:bg-destructive/25' : 'hover:bg-muted/30'}`}>
                   <div className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
                     <Icon className="h-4 w-4 text-muted-foreground" />
                   </div>
@@ -131,13 +131,14 @@ export default function DashboardPage() {
                       )}
                       <StatusBadge status={m.status} />
                       <AnchoredBadge anchored={m.anchored} />
+                      {m.tampered && <span className="inline-flex items-center rounded-sm border px-1.5 py-0 text-[10px] font-bold border-transparent bg-destructive text-destructive-foreground animate-pulse">TAMPERED</span>}
                     </div>
                     <p className="text-xs text-muted-foreground">
                       {from && to ? `${from} → ${to}` : from || to || ""}
                       {m.createdAt && ` · ${new Date(m.createdAt).toLocaleDateString()}`}
                     </p>
                   </div>
-                  <span className={`text-sm font-semibold tabular-nums ${isPositive ? "text-success" : "text-destructive"}`}>
+                  <span className={`text-sm font-semibold tabular-nums ${m.tampered ? "text-destructive" : isPositive ? "text-success" : "text-destructive"}`}>
                     {isPositive ? "+" : "−"}{m.qty}
                   </span>
                   <Button
@@ -145,7 +146,7 @@ export default function DashboardPage() {
                     size="sm"
                     onClick={() => handleVerify(m._id)}
                   >
-                    <Shield className={`h-4 w-4 mr-1 ${m.anchored ? 'text-success' : 'text-muted-foreground'}`} /> Verify
+                    <Shield className={`h-4 w-4 mr-1 ${m.tampered ? 'text-destructive animate-bounce' : m.anchored ? 'text-success' : 'text-muted-foreground'}`} /> Verify
                   </Button>
                 </div>
               );
@@ -155,7 +156,7 @@ export default function DashboardPage() {
 
         {/* Low Stock Alerts */}
         {lowStockItems.length > 0 && (
-          <div className="shadow-card rounded-xl bg-card">
+          <div className="shadow-card rounded-xl">
             <div className="p-4 border-b flex items-center justify-between">
               <h2 className="text-sm font-semibold flex items-center gap-2 text-destructive">
                 <AlertTriangle className="h-4 w-4" /> Low Stock Alerts

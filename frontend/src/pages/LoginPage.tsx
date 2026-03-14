@@ -31,7 +31,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4">
-      <div className="w-full max-w-sm shadow-card rounded-xl bg-card p-8 space-y-6 animate-fade-in">
+      <div className="w-full max-w-sm shadow-card rounded-xl p-8 space-y-6 animate-fade-in">
         <div className="flex flex-col items-center gap-2">
           <div className="h-12 w-12 rounded-xl bg-primary flex items-center justify-center">
             <Anchor className="h-6 w-6 text-primary-foreground" />

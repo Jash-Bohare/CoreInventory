@@ -90,7 +90,7 @@ export default function MovementsPage() {
 
         {loading ? <PageSpinner /> : (
           <>
-            <div className="shadow-card rounded-xl bg-card overflow-hidden">
+            <div className="shadow-card rounded-xl overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow className="bg-muted/50">
@@ -109,17 +109,20 @@ export default function MovementsPage() {
                     <TableRow><TableCell colSpan={8} className="text-center text-muted-foreground py-8">No movements found</TableCell></TableRow>
                   )}
                   {items.map((m: any) => (
-                    <TableRow key={m._id} className="hover:bg-muted/30 transition-colors group">
+                    <TableRow key={m._id} className={`${m.tampered ? 'bg-destructive/15 hover:bg-destructive/25' : 'hover:bg-muted/30'} transition-colors group`}>
                       <TableCell className="capitalize text-xs font-medium">{m.type}</TableCell>
                       <TableCell className="font-medium">{m.productId?.name || "—"}</TableCell>
                       <TableCell>{m.fromWarehouseId?.name || "—"}</TableCell>
                       <TableCell>{m.toWarehouseId?.name || "—"}</TableCell>
-                      <TableCell className="text-right tabular-nums font-semibold">{m.qty}</TableCell>
-                      <TableCell><StatusBadge status={m.status} /> <AnchoredBadge anchored={m.anchored} /></TableCell>
+                      <TableCell className={`text-right tabular-nums font-semibold ${m.tampered ? 'text-destructive' : ''}`}>{m.qty}</TableCell>
+                      <TableCell>
+                        <StatusBadge status={m.status} /> <AnchoredBadge anchored={m.anchored} />
+                        {m.tampered && <span className="ml-1 inline-flex items-center rounded-sm border px-2 py-0.5 text-[10px] font-bold border-transparent bg-destructive text-destructive-foreground animate-pulse">TAMPERED</span>}
+                      </TableCell>
                       <TableCell className="text-xs text-muted-foreground">{m.createdAt ? new Date(m.createdAt).toLocaleDateString() : "—"}</TableCell>
                       <TableCell>
                         <Button variant="ghost" size="sm" onClick={() => { setVerifyId(m._id); setVerifyOpen(true); }}>
-                          <Shield className={`h-4 w-4 ${m.anchored ? 'text-success' : 'text-muted-foreground'}`} />
+                          <Shield className={`h-4 w-4 ${m.tampered ? 'text-destructive animate-bounce' : m.anchored ? 'text-success' : 'text-muted-foreground'}`} />
                         </Button>
                       </TableCell>
                     </TableRow>

@@ -15,22 +15,19 @@ exports.getSummary = async (req, res) => {
       qty: { $lte: 10 }
     })
 
-    // pending receipts (draft)
+    // total receipts
     const pendingReceipts = await StockMovement.countDocuments({
-      type: "receipt",
-      status: "draft"
+      type: "receipt"
     })
 
-    // pending deliveries
+    // total deliveries
     const pendingDeliveries = await StockMovement.countDocuments({
-      type: "delivery",
-      status: "draft"
+      type: "delivery"
     })
 
-    // internal transfers scheduled
+    // total transfers
     const transfersScheduled = await StockMovement.countDocuments({
-      type: "transfer",
-      status: "draft"
+      type: "transfer"
     })
 
     res.json({
@@ -64,7 +61,16 @@ exports.getRecentMovements = async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(limit)
 
-    res.json(movements)
+    const hashMovement = require("../utils/hashMovement");
+    const data = movements.map(m => {
+        const obj = m.toJSON();
+        if (obj.canonicalHash) {
+            obj.tampered = hashMovement(m) !== obj.canonicalHash;
+        }
+        return obj;
+    });
+
+    res.json(data)
 
   } catch (error) {
 

@@ -82,7 +82,7 @@ export default function OperationPage({ type, title }: OperationPageProps) {
       } />
       <main className="flex-1 p-6 max-w-[1400px] mx-auto w-full">
         {loading ? <PageSpinner /> : (
-          <div className="shadow-card rounded-xl bg-card overflow-hidden">
+          <div className="shadow-card rounded-xl overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/50">
@@ -103,19 +103,22 @@ export default function OperationPage({ type, title }: OperationPageProps) {
                   <TableRow><TableCell colSpan={type === "transfer" ? 7 : 6} className="text-center text-muted-foreground py-8">No {title.toLowerCase()} yet</TableCell></TableRow>
                 )}
                 {items.map((m: any) => (
-                  <TableRow key={m._id} className="hover:bg-muted/30 transition-colors group">
+                  <TableRow key={m._id} className={`${m.tampered ? 'bg-destructive/15 hover:bg-destructive/25' : 'hover:bg-muted/30'} transition-colors group`}>
                     <TableCell className="font-medium">{m.productId?.name || "—"}</TableCell>
                     {type === "transfer" ? (
                       <><TableCell>{m.fromWarehouseId?.name || "—"}</TableCell><TableCell>{m.toWarehouseId?.name || "—"}</TableCell></>
                     ) : (
                       <TableCell>{(m.toWarehouseId?.name || m.fromWarehouseId?.name) || "—"}</TableCell>
                     )}
-                    <TableCell className="text-right tabular-nums font-semibold">{m.qty}</TableCell>
-                    <TableCell><StatusBadge status={m.status} /> <AnchoredBadge anchored={m.anchored} /></TableCell>
+                    <TableCell className={`text-right tabular-nums font-semibold ${m.tampered ? 'text-destructive' : ''}`}>{m.qty}</TableCell>
+                    <TableCell>
+                      <StatusBadge status={m.status} /> <AnchoredBadge anchored={m.anchored} />
+                      {m.tampered && <span className="ml-1 inline-flex items-center rounded-sm border px-2 py-0.5 text-[10px] font-bold border-transparent bg-destructive text-destructive-foreground animate-pulse">TAMPERED</span>}
+                    </TableCell>
                     <TableCell className="text-xs text-muted-foreground">{m.createdAt ? new Date(m.createdAt).toLocaleDateString() : "—"}</TableCell>
                     <TableCell>
                       <Button variant="ghost" size="sm" onClick={() => { setVerifyId(m._id); setVerifyOpen(true); }}>
-                        <Shield className={`h-4 w-4 ${m.anchored ? 'text-success' : 'text-muted-foreground'}`} />
+                        <Shield className={`h-4 w-4 ${m.tampered ? 'text-destructive animate-bounce' : m.anchored ? 'text-success' : 'text-muted-foreground'}`} />
                       </Button>
                     </TableCell>
                   </TableRow>
