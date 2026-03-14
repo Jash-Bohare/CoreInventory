@@ -7,6 +7,9 @@ createDelivery,
 createTransfer,
 createAdjustment
 } = require("../controllers/movement.controller")
+const { getMovements } = require("../controllers/movement.controller")
+
+router.get("/", getMovements)
 
 router.post("/receipt", createReceipt)
 

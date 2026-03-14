@@ -49,4 +49,11 @@ const stockMovementSchema = new mongoose.Schema(
     timestamps: true
 })
 
+stockMovementSchema.index({ createdAt: -1 })
+stockMovementSchema.index({ productId: 1 })
+stockMovementSchema.index({ fromWarehouseId: 1 })
+stockMovementSchema.index({ toWarehouseId: 1 })
+stockMovementSchema.index({ type: 1 })
+stockMovementSchema.index({ status: 1 })
+
 module.exports = mongoose.model("StockMovement", stockMovementSchema)

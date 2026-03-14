@@ -266,3 +266,69 @@ exports.createAdjustment = async (req, res) => {
     }
 
 }
+
+exports.getMovements = async (req, res) => {
+
+    try {
+
+        const {
+            type,
+            status,
+            productId,
+            warehouseId,
+            startDate,
+            endDate,
+            page = 1,
+            limit = 10,
+            sort = "desc"
+        } = req.query
+
+        const query = {}
+
+        if (type) query.type = type
+
+        if (status) query.status = status
+
+        if (productId) query.productId = productId
+
+        if (warehouseId) {
+            query.$or = [
+                { fromWarehouseId: warehouseId },
+                { toWarehouseId: warehouseId }
+            ]
+        }
+
+        if (startDate || endDate) {
+            query.createdAt = {}
+
+            if (startDate) query.createdAt.$gte = new Date(startDate)
+
+            if (endDate) query.createdAt.$lte = new Date(endDate)
+        }
+
+        const skip = (page - 1) * limit
+
+        const movements = await StockMovement.find(query)
+            .populate("productId")
+            .populate("fromWarehouseId")
+            .populate("toWarehouseId")
+            .sort({ createdAt: sort === "asc" ? 1 : -1 })
+            .skip(skip)
+            .limit(Number(limit))
+
+        const total = await StockMovement.countDocuments(query)
+
+        res.json({
+            total,
+            page: Number(page),
+            pages: Math.ceil(total / limit),
+            data: movements
+        })
+
+    } catch (error) {
+
+        res.status(500).json({ message: error.message })
+
+    }
+
+}
