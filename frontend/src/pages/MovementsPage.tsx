@@ -106,7 +106,15 @@ export default function MovementsPage() {
                 </TableHeader>
                 <TableBody>
                   {items.length === 0 && (
-                    <TableRow><TableCell colSpan={8} className="text-center text-muted-foreground py-8">No movements found</TableCell></TableRow>
+                    <TableRow>
+                      <TableCell colSpan={8} className="h-64 align-middle">
+                        <EmptyState 
+                          icon={List} 
+                          title="Ledger is Empty" 
+                          description="Once products move, immutable records will appear here." 
+                        />
+                      </TableCell>
+                    </TableRow>
                   )}
                   {items.map((m: any) => (
                     <TableRow key={m._id} className={`${m.tampered ? 'bg-destructive/15 hover:bg-destructive/25' : 'hover:bg-muted/30'} transition-colors group`}>

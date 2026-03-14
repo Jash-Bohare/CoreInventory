@@ -4,54 +4,54 @@
 
 @layer base {
   :root {
-    --background: 240 10% 4%;
+    --background: 240 10% 2%; /* Deeper off-black */
     --foreground: 0 0% 98%;
 
-    --card: 240 10% 6%;
+    --card: 240 10% 4%; /* Slightly lighter than background */
     --card-foreground: 0 0% 98%;
 
-    --popover: 240 10% 6%;
+    --popover: 240 10% 4%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 263.4 70% 50.4%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 263.4 80% 60%; /* Vibrant neon violet */
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 240 5% 15%;
+    --secondary: 240 5% 10%;
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 240 5% 15%;
+    --muted: 240 5% 10%;
     --muted-foreground: 240 5% 65%;
 
-    --accent: 240 5% 15%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 263.4 80% 60%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --success: 152 69% 31%;
-    --success-foreground: 0 0% 98%;
+    --success: 152 75% 40%; /* Brighter, sharper green */
+    --success-foreground: 0 0% 100%;
 
-    --border: 240 5% 20%;
-    --input: 240 5% 20%;
-    --ring: 263.4 70% 50.4%;
+    --border: 240 5% 15%;
+    --input: 240 5% 15%;
+    --ring: 263.4 80% 60%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 240 10% 5%;
+    --sidebar-background: 240 10% 2%;
     --sidebar-foreground: 0 0% 90%;
-    --sidebar-primary: 263.4 70% 50.4%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 5% 12%;
+    --sidebar-primary: 263.4 80% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 5% 10%;
     --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 240 5% 15%;
-    --sidebar-ring: 263.4 70% 50.4%;
+    --sidebar-border: 240 5% 10%;
+    --sidebar-ring: 263.4 80% 60%;
 
-    --shadow-card: 0 4px 20px -2px rgba(0,0,0,0.3);
-    --shadow-card-hover: 0 0 0 1px rgba(139, 92, 246, 0.4), 0 8px 30px -4px rgba(0,0,0,0.5);
+    --shadow-card: 0 8px 30px -4px rgba(0,0,0,0.4);
+    --shadow-card-hover: 0 0 0 1px rgba(139, 92, 246, 0.5), 0 12px 40px -8px rgba(139, 92, 246, 0.15), 0 12px 40px -8px rgba(0,0,0,0.6);
   }
 
   .dark {
-    /* Kept same as root so the dark theme is fully forced to avoid flashing and ensure maximum premium look */
+    /* Kept same as root so the dark theme is fully forced */
   }
 }
 
@@ -61,6 +61,7 @@
   }
   body {
     @apply bg-background text-foreground antialiased;
+    font-family: 'Plus Jakarta Sans', sans-serif;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     background-image: radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.08), transparent 25%),
                       radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.05), transparent 25%);

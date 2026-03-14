@@ -25,7 +25,7 @@ export function TopBar({ title, actions }: TopBarProps) {
   };
 
   return (
-    <header className="h-16 flex items-center justify-between border-b px-4 backdrop-blur-md bg-background/80 sticky top-0 z-30">
+    <header className="h-16 flex items-center justify-between border-b border-border/50 shadow-sm px-6 backdrop-blur-xl bg-background/60 sticky top-0 z-30 transition-all">
       <div className="flex items-center gap-3">
         <SidebarTrigger />
         {title && <h1 className="text-lg font-semibold tracking-tight">{title}</h1>}

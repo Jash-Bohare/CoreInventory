@@ -100,7 +100,15 @@ export default function OperationPage({ type, title }: OperationPageProps) {
               </TableHeader>
               <TableBody>
                 {items.length === 0 && (
-                  <TableRow><TableCell colSpan={type === "transfer" ? 7 : 6} className="text-center text-muted-foreground py-8">No {title.toLowerCase()} yet</TableCell></TableRow>
+                  <TableRow>
+                    <TableCell colSpan={type === "transfer" ? 7 : 6} className="h-64 align-middle">
+                      <EmptyState 
+                        icon={Layers} 
+                        title={`No ${title} Found`} 
+                        description="There are no active operations for this category." 
+                      />
+                    </TableCell>
+                  </TableRow>
                 )}
                 {items.map((m: any) => (
                   <TableRow key={m._id} className={`${m.tampered ? 'bg-destructive/15 hover:bg-destructive/25' : 'hover:bg-muted/30'} transition-colors group`}>

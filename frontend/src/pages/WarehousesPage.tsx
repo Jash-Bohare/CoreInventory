@@ -9,7 +9,8 @@ import { PageSpinner } from "@/components/Spinner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Warehouse } from "lucide-react";
+import { EmptyState } from "@/components/EmptyState";
 
 export default function WarehousesPage() {
   const { warehouses, fetchWarehouses, warehousesLoaded } = useData();
@@ -75,7 +76,15 @@ export default function WarehousesPage() {
               </TableHeader>
               <TableBody>
                 {warehouses.length === 0 && (
-                  <TableRow><TableCell colSpan={3} className="text-center text-muted-foreground py-8">No warehouses yet</TableCell></TableRow>
+                  <TableRow>
+                    <TableCell colSpan={3} className="h-64 align-middle">
+                      <EmptyState 
+                        icon={Warehouse} 
+                        title="No Warehouses Found" 
+                        description="Get started by deploying your first tracking facility." 
+                      />
+                    </TableCell>
+                  </TableRow>
                 )}
                 {warehouses.map((w: any) => (
                   <TableRow key={w._id} className="hover:bg-muted/30 transition-colors">

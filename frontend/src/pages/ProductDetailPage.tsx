@@ -62,7 +62,15 @@ export default function ProductDetailPage() {
             </TableHeader>
             <TableBody>
               {(!stock?.locations || stock.locations.length === 0) && (
-                <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground py-8">No stock data</TableCell></TableRow>
+                <TableRow>
+                  <TableCell colSpan={4} className="h-48 align-middle">
+                    <EmptyState 
+                      icon={Database} 
+                      title="No Stock Records" 
+                      description="This product isn't currently located in any warehouse." 
+                    />
+                  </TableCell>
+                </TableRow>
               )}
               {stock?.locations?.map((loc: any) => (
                 <TableRow key={loc.warehouseId}>

@@ -10,7 +10,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2, PackageSearch } from "lucide-react";
+import { EmptyState } from "@/components/EmptyState";
 
 export default function ProductsPage() {
   const { products, fetchProducts, productsLoaded } = useData();
@@ -81,7 +82,15 @@ export default function ProductsPage() {
               </TableHeader>
               <TableBody>
                 {products.length === 0 && (
-                  <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">No products yet</TableCell></TableRow>
+                  <TableRow>
+                    <TableCell colSpan={5} className="h-64 align-middle">
+                      <EmptyState 
+                        icon={PackageSearch} 
+                        title="No Products Found" 
+                        description="Define the exact parameters of your first immutable product line." 
+                      />
+                    </TableCell>
+                  </TableRow>
                 )}
                 {products.map((p: any) => (
                   <TableRow key={p._id} className="hover:bg-muted/30 transition-colors">

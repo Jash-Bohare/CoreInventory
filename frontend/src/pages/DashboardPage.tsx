@@ -107,7 +107,13 @@ export default function DashboardPage() {
           </div>
           <div className="divide-y">
             {movements.length === 0 && (
-              <p className="text-sm text-muted-foreground p-4">No movements yet.</p>
+              <div className="py-8">
+                <EmptyState 
+                  icon={List} 
+                  title="Ledger is Empty" 
+                  description="Awaiting first movement." 
+                />
+              </div>
             )}
             {movements.map((m: any) => {
               const Icon = typeIcons[m.type] || Package;

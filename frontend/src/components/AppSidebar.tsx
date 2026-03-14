@@ -56,10 +56,10 @@ function NavGroup({ label, items }: { label: string; items: typeof mainItems }) 
                 <NavLink
                   to={item.url}
                   end={item.url === "/"}
-                  className="hover:bg-accent/50"
-                  activeClassName="bg-accent text-primary font-medium"
+                  className="hover:bg-accent/10 hover:text-accent transition-all duration-300 rounded-lg group"
+                  activeClassName="bg-primary/10 text-primary font-medium shadow-[inset_2px_0_0_0_hsl(var(--primary))] bg-gradient-to-r from-primary/10 to-transparent"
                 >
-                  <item.icon className="mr-2 h-5 w-5" strokeWidth={1.5} />
+                  <item.icon className="mr-2 h-5 w-5 opacity-70 group-hover:opacity-100 transition-opacity" strokeWidth={2} />
                   {!collapsed && <span>{item.title}</span>}
                 </NavLink>
               </SidebarMenuButton>
@@ -75,8 +75,11 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarContent>
-        <div className="px-4 py-5">
-          <span className="text-lg font-bold tracking-tight text-foreground">CoreInventory</span>
+        <div className="px-4 py-6 flex items-center gap-3">
+          <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
+            <Anchor className="h-4 w-4 text-primary-foreground" />
+          </div>
+          <span className="text-lg font-bold tracking-tight text-foreground bg-clip-text text-transparent bg-gradient-to-r from-foreground to-muted-foreground">CoreInventory</span>
         </div>
         <NavGroup label="Overview" items={mainItems} />
         <NavGroup label="Operations" items={operationItems} />
