@@ -15,18 +15,35 @@ import { Plus, Pencil, Trash2 } from "lucide-react";
 export default function ProductsPage() {
   const { products, fetchProducts, productsLoaded } = useData();
   const [modalOpen, setModalOpen] = useState(false);
+  const [editing, setEditing] = useState<any>(null);
   const [form, setForm] = useState({ name: "", sku: "", category: "", unit: "" });
   const [saving, setSaving] = useState(false);
 
   useEffect(() => { if (!productsLoaded) fetchProducts(); }, []);
 
-  const handleCreate = async () => {
+  const openCreate = () => {
+    setEditing(null);
+    setForm({ name: "", sku: "", category: "", unit: "" });
+    setModalOpen(true);
+  };
+
+  const openEdit = (p: any) => {
+    setEditing(p);
+    setForm({ name: p.name, sku: p.sku, category: p.category, unit: p.unit });
+    setModalOpen(true);
+  };
+
+  const handleSave = async () => {
     setSaving(true);
     try {
-      await productsApi.create(form);
-      toast.success("Product created");
+      if (editing) {
+        await productsApi.update(editing._id, form);
+        toast.success("Product updated");
+      } else {
+        await productsApi.create(form);
+        toast.success("Product created");
+      }
       setModalOpen(false);
-      setForm({ name: "", sku: "", category: "", unit: "" });
       fetchProducts();
     } catch (e: any) {
       toast.error(e.message);
@@ -45,7 +62,7 @@ export default function ProductsPage() {
   return (
     <>
       <TopBar title="Products" actions={
-        <Button onClick={() => setModalOpen(true)} className="active:scale-[0.98]">
+        <Button onClick={openCreate} className="active:scale-[0.98]">
           <Plus className="h-4 w-4 mr-1.5" /> Add Product
         </Button>
       } />
@@ -76,6 +93,9 @@ export default function ProductsPage() {
                     <TableCell>{p.unit}</TableCell>
                     <TableCell>
                       <div className="flex gap-1">
+                        <Button variant="ghost" size="icon" onClick={() => openEdit(p)}>
+                          <Pencil className="h-4 w-4" />
+                        </Button>
                         <Button variant="ghost" size="icon" onClick={() => handleDelete(p._id)}>
                           <Trash2 className="h-4 w-4 text-destructive" />
                         </Button>
@@ -91,7 +111,7 @@ export default function ProductsPage() {
 
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
         <DialogContent className="animate-fade-in">
-          <DialogHeader><DialogTitle>Add Product</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>{editing ? "Edit Product" : "Add Product"}</DialogTitle></DialogHeader>
           <div className="space-y-3">
             <div><Label>Name</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Steel Rod" /></div>
             <div><Label>SKU</Label><Input value={form.sku} onChange={(e) => setForm({ ...form, sku: e.target.value })} placeholder="STL-001" /></div>
@@ -100,8 +120,8 @@ export default function ProductsPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setModalOpen(false)}>Cancel</Button>
-            <Button onClick={handleCreate} disabled={saving || !form.name || !form.sku} className="active:scale-[0.98]">
-              {saving ? "Creating..." : "Create"}
+            <Button onClick={handleSave} disabled={saving || !form.name || !form.sku} className="active:scale-[0.98]">
+              {saving ? "Saving..." : editing ? "Update" : "Create"}
             </Button>
           </DialogFooter>
         </DialogContent>

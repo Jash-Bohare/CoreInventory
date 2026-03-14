@@ -14,14 +14,23 @@ import {
 export default function DashboardPage() {
   const [summary, setSummary] = useState<any>(null);
   const [movements, setMovements] = useState<any[]>([]);
+  const [lowStockItems, setLowStockItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [anchoring, setAnchoring] = useState(false);
   const [verifyId, setVerifyId] = useState<string>("");
   const [verifyOpen, setVerifyOpen] = useState(false);
 
   useEffect(() => {
-    Promise.all([dashboardApi.summary(), dashboardApi.recentMovements(8)])
-      .then(([s, m]) => { setSummary(s); setMovements(m); })
+    Promise.all([
+      dashboardApi.summary(), 
+      dashboardApi.recentMovements(8),
+      dashboardApi.lowStock(10, 5)
+    ])
+      .then(([s, m, l]) => { 
+        setSummary(s); 
+        setMovements(m); 
+        setLowStockItems(l.data || []);
+      })
       .catch(() => toast.error("Failed to load dashboard"))
       .finally(() => setLoading(false));
   }, []);
@@ -134,16 +143,48 @@ export default function DashboardPage() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="opacity-0 group-hover:opacity-100 transition-opacity"
                     onClick={() => handleVerify(m._id)}
                   >
-                    <Shield className="h-4 w-4 mr-1" /> Verify
+                    <Shield className={`h-4 w-4 mr-1 ${m.anchored ? 'text-success' : 'text-muted-foreground'}`} /> Verify
                   </Button>
                 </div>
               );
             })}
           </div>
         </div>
+
+        {/* Low Stock Alerts */}
+        {lowStockItems.length > 0 && (
+          <div className="shadow-card rounded-xl bg-card">
+            <div className="p-4 border-b flex items-center justify-between">
+              <h2 className="text-sm font-semibold flex items-center gap-2 text-destructive">
+                <AlertTriangle className="h-4 w-4" /> Low Stock Alerts
+              </h2>
+              <Link to="/products" className="text-xs text-primary hover:underline">View all products</Link>
+            </div>
+            <div className="divide-y">
+              {lowStockItems.map((item: any) => (
+                <div key={item.productId} className="flex items-center justify-between p-3 hover:bg-muted/30 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-lg bg-destructive/10 flex items-center justify-center flex-shrink-0">
+                      <Package className="h-4 w-4 text-destructive" />
+                    </div>
+                    <div>
+                      <Link to={`/products/${item.productId}`} className="text-sm font-medium hover:text-primary">
+                        {item.name}
+                      </Link>
+                      <p className="text-xs text-muted-foreground font-mono">{item.sku}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-sm font-bold text-destructive tabular-nums">{item.totalQty}</span>
+                    <span className="text-xs text-muted-foreground ml-1">{item.unit}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </main>
 
       <VerifyModal movementId={verifyId} open={verifyOpen} onOpenChange={setVerifyOpen} />

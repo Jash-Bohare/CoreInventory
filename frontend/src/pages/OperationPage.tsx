@@ -114,8 +114,8 @@ export default function OperationPage({ type, title }: OperationPageProps) {
                     <TableCell><StatusBadge status={m.status} /> <AnchoredBadge anchored={m.anchored} /></TableCell>
                     <TableCell className="text-xs text-muted-foreground">{m.createdAt ? new Date(m.createdAt).toLocaleDateString() : "—"}</TableCell>
                     <TableCell>
-                      <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100" onClick={() => { setVerifyId(m._id); setVerifyOpen(true); }}>
-                        <Shield className="h-4 w-4" />
+                      <Button variant="ghost" size="sm" onClick={() => { setVerifyId(m._id); setVerifyOpen(true); }}>
+                        <Shield className={`h-4 w-4 ${m.anchored ? 'text-success' : 'text-muted-foreground'}`} />
                       </Button>
                     </TableCell>
                   </TableRow>

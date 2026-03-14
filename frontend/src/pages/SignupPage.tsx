@@ -7,12 +7,13 @@ import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/Spinner";
 import { Anchor } from "lucide-react";
 
-export default function LoginPage() {
-  const [email, setEmail] = useState("demo@coreinv.local");
-  const [password, setPassword] = useState("password");
+export default function SignupPage() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { signup } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -20,10 +21,10 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
     try {
-      await login(email, password);
+      await signup(name, email, password);
       navigate("/");
     } catch (err: any) {
-      setError(err.message || "Login failed");
+      setError(err.message || "Signup failed");
     } finally {
       setLoading(false);
     }
@@ -36,14 +37,18 @@ export default function LoginPage() {
           <div className="h-12 w-12 rounded-xl bg-primary flex items-center justify-center">
             <Anchor className="h-6 w-6 text-primary-foreground" />
           </div>
-          <h1 className="text-xl font-bold tracking-tight">CoreInventory</h1>
-          <p className="text-sm text-muted-foreground">Inventory you can prove.</p>
+          <h1 className="text-xl font-bold tracking-tight">Create an Account</h1>
+          <p className="text-sm text-muted-foreground">Join CoreInventory today.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
+            <Label htmlFor="name">Full Name</Label>
+            <Input id="name" type="text" value={name} onChange={(e) => setName(e.target.value)} required placeholder="John Doe" />
+          </div>
+          <div className="space-y-1.5">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="john@example.com" />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="password">Password</Label>
@@ -51,15 +56,14 @@ export default function LoginPage() {
           </div>
           {error && <p className="text-sm text-destructive">{error}</p>}
           <Button type="submit" className="w-full active:scale-[0.98] transition-transform" disabled={loading}>
-            {loading ? <Spinner className="h-4 w-4" /> : "Sign In"}
+            {loading ? <Spinner className="h-4 w-4" /> : "Sign Up"}
           </Button>
         </form>
 
-        <p className="text-xs text-center text-muted-foreground mt-4">
-          Demo: demo@coreinv.local / password<br/><br/>
-          Don't have an account?{" "}
-          <Link to="/signup" className="text-primary hover:underline">
-            Sign up
+        <p className="text-xs text-center text-muted-foreground">
+          Already have an account?{" "}
+          <Link to="/login" className="text-primary hover:underline">
+            Log in
           </Link>
         </p>
       </div>

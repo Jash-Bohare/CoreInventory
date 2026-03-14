@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { anchorApi } from "@/services/api";
 import {
   Dialog,
@@ -25,6 +25,7 @@ export function VerifyModal({ movementId, open, onOpenChange }: VerifyModalProps
   const loadProof = async () => {
     setLoading(true);
     setError("");
+    setData(null);
     try {
       const res = await anchorApi.verify(movementId);
       setData(res);
@@ -35,10 +36,9 @@ export function VerifyModal({ movementId, open, onOpenChange }: VerifyModalProps
     }
   };
 
-  const handleOpen = (isOpen: boolean) => {
-    if (isOpen && !data && !loading) loadProof();
-    onOpenChange(isOpen);
-  };
+  useEffect(() => {
+    if (open && movementId) loadProof();
+  }, [open, movementId]);
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -46,7 +46,7 @@ export function VerifyModal({ movementId, open, onOpenChange }: VerifyModalProps
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleOpen}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg animate-fade-in">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -79,8 +79,8 @@ export function VerifyModal({ movementId, open, onOpenChange }: VerifyModalProps
                 {data.merkleProof?.map((hash: string, i: number) => (
                   <div key={i} className="flex items-center justify-between group">
                     <code className="text-xs font-mono text-foreground truncate flex-1">{hash}</code>
-                    <button onClick={() => copyToClipboard(hash)} className="opacity-0 group-hover:opacity-100 transition-opacity ml-2">
-                      <Copy className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground" />
+                    <button onClick={() => copyToClipboard(hash)} className="transition-opacity ml-2 text-muted-foreground hover:text-foreground">
+                      <Copy className="h-3.5 w-3.5" />
                     </button>
                   </div>
                 ))}
